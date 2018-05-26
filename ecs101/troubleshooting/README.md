@@ -37,3 +37,40 @@ Output:
 ```bash
 aws cloudformation delete-stack --stack-name no-instance-in-cluster --region <REGION>
 ```
+
+
+### Wrong ECS Cluster
+
+#### Scenario
+
+Hello,
+
+I created an ECS cluster and launch an EC2 instance.
+But it looks like my EC2 instance register to 'default'
+instead of the ECS cluster I just created.
+Is there any problem in the ECS settings?
+
+#### Deploy the Troubleshooting lab
+
+Open `wrong-ecs-cluster-params.json`, edit the `KeyPair`
+parameter value(`ParameterValue`) as your key pair name.
+
+Using AWS CLI:
+
+
+```bash
+aws cloudformation create-stack --stack-name wrong-ecs-cluster --template-body file://$PWD/wrong-ecs-cluster.yml --parameters file://$PWD/wrong-ecs-cluster-params.json --region <REGION> --capabilities CAPABILITY_NAMED_IAM
+```
+
+Output:
+```bash
+{
+    "StackId": "arn:aws:cloudformation:<REGION>:<ACCOUNT_ID>:stack/no-instance-in-cluster/XXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+}
+```
+
+#### Clean up
+
+```bash
+aws cloudformation delete-stack --stack-name wrong-ecs-cluster --region <REGION>
+```
