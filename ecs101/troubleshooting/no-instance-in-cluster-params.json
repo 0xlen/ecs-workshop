@@ -1,0 +1,10 @@
+[
+    {
+        "ParameterKey":"EnvironmentName",
+        "ParameterValue":"no-instance-in-cluster"
+    },
+    {
+        "ParameterKey":"KeyPair",
+        "ParameterValue":"<KEY_PARI_NAME>"
+    }
+]
