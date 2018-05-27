@@ -1,0 +1,35 @@
+TaskDefinition: 
+    Type: "AWS::ECS::TaskDefinition"
+    Properties: 
+        RequiresCompatibilities:
+            - "EC2"
+            - "FARGATE"
+        ContainerDefinitions: 
+            - Name: "my-app"
+              MountPoints: 
+                  - SourceVolume: "my-vol"
+                    ContainerPath: "/var/www/my-vol"
+              Image: "amazon/amazon-ecs-sample"
+              Cpu: "10"
+              EntryPoint: 
+                  - "/usr/sbin/apache2"
+                  - "-D"
+                  - "FOREGROUND"
+              Memory: "500"
+              Essential: "true"
+            - Name: "busybox"
+              Image: "busybox"
+              Cpu: "10"
+              EntryPoint: 
+                  - "sh"
+                  - "-c"
+              Memory: "500"
+              Command: 
+                  - "/bin/sh -c \"while true; do /bin/date &gt; /var/www/my-vol/date; sleep 1; done\""
+              Essential: "false"
+              VolumesFrom: 
+                  - SourceContainer: "my-app"
+        Volumes: 
+            - Host: 
+              SourcePath: "/var/lib/docker/vfs/dir/"
+              Name: "my-vol"

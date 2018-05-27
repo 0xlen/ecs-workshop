@@ -1,0 +1,155 @@
+Description: >
+    Solution of troubleshooting scenario - Fargate task unable pull image
+    Due to the Fargate task did not assign public IP address the Fargate Task
+    was unable to pull the image through the internet and reach the docker hub registry.
+    Created by Eason Cao, yangxinc@amazon.com
+Parameters:
+
+    EnvironmentName:
+        Description: An environment name that will be prefixed to resource names
+        Type: String
+
+    VpcCIDR:
+        Description: Please enter the IP range (CIDR notation) for this VPC
+        Type: String
+        Default: 10.0.0.0/16
+
+    PublicSubnetCIDR:
+        Description: Please enter the IP range (CIDR notation) for the public subnet in the first Availability Zone
+        Type: String
+        Default: 10.0.10.0/24
+
+    CIDR:
+        Description: CIDR range that you will allow SSH traffic from (default is from Default VPC only)
+        Type: String
+        Default: "10.0.0.0/16"
+
+Resources:
+
+    ECSCluster:
+        Type: AWS::ECS::Cluster
+        Properties:
+            ClusterName: !Ref EnvironmentName
+
+    TaskDefinition: 
+        Type: "AWS::ECS::TaskDefinition"
+        Properties: 
+            NetworkMode: awsvpc
+            RequiresCompatibilities:
+              - "FARGATE"
+            Cpu: 256
+            Memory: 512
+            ContainerDefinitions: 
+                - Name: "my-app"
+                  MountPoints: 
+                    - SourceVolume: "my-vol"
+                      ContainerPath: "/var/www/my-vol"
+                  Image: "amazon/amazon-ecs-sample"
+                  Cpu: "10"
+                  EntryPoint: 
+                    - "/usr/sbin/apache2"
+                    - "-D"
+                    - "FOREGROUND"
+                  Memory: "500"
+                  Essential: "true"
+                - Name: "busybox"
+                  Image: "busybox"
+                  EntryPoint: 
+                    - "sh"
+                    - "-c"
+                  Command: 
+                    - "/bin/sh -c \"while true; do /bin/date &gt; /var/www/my-vol/date; sleep 1; done\""
+                  Essential: "false"
+                  VolumesFrom: 
+                    - SourceContainer: "my-app"
+            Volumes: 
+              - Name: "my-vol"
+
+    FargateService:
+        Type: AWS::ECS::Service
+        Properties:
+            Cluster: !Ref ECSCluster
+            DesiredCount: 1
+            LaunchType: FARGATE
+            TaskDefinition: !Ref TaskDefinition
+            NetworkConfiguration:
+                AwsvpcConfiguration:
+                    AssignPublicIp: ENABLED
+                    SecurityGroups:
+                      - !Ref InstanceSecurityGroup
+                    Subnets:
+                      - !Ref PublicSubnet
+
+    InstanceSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupName: !Sub ${EnvironmentName}-SG
+            GroupDescription: Allow SSH to EC2 instances from !Ref CIDR
+            VpcId: !Ref VPC
+            SecurityGroupIngress:
+              - IpProtocol: tcp
+                FromPort: 80
+                ToPort: 80
+                CidrIp: !Ref CIDR
+
+    VPC:
+        Type: AWS::EC2::VPC
+        Properties:
+            CidrBlock: !Ref VpcCIDR
+            EnableDnsSupport: true
+            EnableDnsHostnames: true
+            Tags:
+                - Key: Name
+                  Value: !Ref EnvironmentName
+
+    InternetGateway:
+        Type: AWS::EC2::InternetGateway
+        Properties:
+            Tags:
+                - Key: Name
+                  Value: !Ref EnvironmentName
+
+    InternetGatewayAttachment:
+        Type: AWS::EC2::VPCGatewayAttachment
+        Properties:
+            InternetGatewayId: !Ref InternetGateway
+            VpcId: !Ref VPC
+
+    PublicSubnet:
+        Type: AWS::EC2::Subnet
+        Properties:
+            VpcId: !Ref VPC
+            AvailabilityZone: !Select [ 0, !GetAZs '' ]
+            CidrBlock: !Ref PublicSubnetCIDR
+            MapPublicIpOnLaunch: true
+            Tags:
+                - Key: Name
+                  Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
+
+    PublicRouteTable:
+        Type: AWS::EC2::RouteTable
+        Properties:
+            VpcId: !Ref VPC
+            Tags:
+                - Key: Name
+                  Value: !Sub ${EnvironmentName} Public Routes
+
+    DefaultPublicRoute:
+        Type: AWS::EC2::Route
+        DependsOn: InternetGatewayAttachment
+        Properties:
+            RouteTableId: !Ref PublicRouteTable
+            DestinationCidrBlock: 0.0.0.0/0
+            GatewayId: !Ref InternetGateway
+
+    PublicSubnetRouteTableAssociation:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties:
+            RouteTableId: !Ref PublicRouteTable
+            SubnetId: !Ref PublicSubnet
+
+Outputs:
+
+    Cluster:
+        Description: A reference to the ECS cluster
+        Value: !Ref ECSCluster
