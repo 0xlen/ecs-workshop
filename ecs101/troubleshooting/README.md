@@ -65,7 +65,7 @@ aws cloudformation create-stack --stack-name wrong-ecs-cluster --template-body f
 Output:
 ```bash
 {
-    "StackId": "arn:aws:cloudformation:<REGION>:<ACCOUNT_ID>:stack/no-instance-in-cluster/XXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+    "StackId": "arn:aws:cloudformation:<REGION>:<ACCOUNT_ID>:stack/wrong-ecs-cluster/XXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
 }
 ```
 
