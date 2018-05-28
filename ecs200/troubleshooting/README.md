@@ -74,3 +74,40 @@ You will see the error message and the task will fail to provision.
 ```bash
 aws cloudformation delete-stack --stack-name fargate-cannot-run-tasks-concurrency --region <REGION>
 ```
+
+### Same task definition but fail to run task
+
+#### Scenario
+
+Hello,
+
+I created a task definition and it can successfully run the task in my
+ECS services. However, if I tried to increase the number of task in one of
+my ECS service, it will fail. Could you please help me to find the issue?
+
+
+#### Deploy the Troubleshooting lab
+
+Using AWS CLI:
+
+```bash
+aws cloudformation create-stack --stack-name sameTD-fail-run-task --template-body file://$PWD/sameTD-fail-run-task.yml --parameters file://$PWD/sameTD-fail-run-task-params.json --region <REGION> --capabilities CAPABILITY_NAMED_IAM
+```
+
+Output:
+
+```bash
+{
+    "StackId": "arn:aws:cloudformation:<REGION>:<ACCOUNT_ID>:stack/sameTD-fail-run-task/XXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+}
+```
+
+After deployed the stack, try to increase the desired count of task for each of ECS services.
+
+You will see the error message in of the ECS service and the task will fail to run.
+
+#### Clean up
+
+```bash
+aws cloudformation delete-stack --stack-name sameTD-fail-run-task --region <REGION>
+```
