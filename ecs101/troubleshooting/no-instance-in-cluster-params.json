@@ -5,6 +5,6 @@
     },
     {
         "ParameterKey":"KeyPair",
-        "ParameterValue":"<KEY_PARI_NAME>"
+        "ParameterValue":"<KEY_PAIR_NAME>"
     }
 ]
