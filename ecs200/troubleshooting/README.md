@@ -75,6 +75,45 @@ You will see the error message and the task will fail to provision.
 aws cloudformation delete-stack --stack-name fargate-cannot-run-tasks-concurrency --region <REGION>
 ```
 
+### Unable to place ECS task
+
+#### Scenario
+
+Hello,
+
+I cannot scale out my ECS task, it shows “unable to place a task
+because no container instance met all of its requirements”, why?
+
+
+#### Deploy the Troubleshooting lab
+
+Open `unable-place-task-params.json`, edit the `KeyPair`
+parameter value(`ParameterValue`) as your key pair name.
+
+Using AWS CLI:
+
+```bash
+aws cloudformation create-stack --stack-name unable-place-task --template-body file://$PWD/unable-place-task.yml --parameters file://$PWD/unable-place-task-params.json --region <REGION> --capabilities CAPABILITY_NAMED_IAM
+```
+
+Output:
+
+```bash
+{
+    "StackId": "arn:aws:cloudformation:<REGION>:<ACCOUNT_ID>:stack/unable-place-task/XXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+}
+```
+
+After deployed the stack, try to increase the desired count of task for each of ECS services.
+
+You will see the error message - `unable to place a task because no container instance met all of its requirements`.
+
+#### Clean up
+
+```bash
+aws cloudformation delete-stack --stack-name unable-place-task --region <REGION>
+```
+
 ### Same task definition but fail to run task
 
 #### Scenario
@@ -87,6 +126,9 @@ my ECS service, it will fail. Could you please help me to find the issue?
 
 
 #### Deploy the Troubleshooting lab
+
+Open `sameTD-fail-run-task-params.json`, edit the `KeyPair`
+parameter value(`ParameterValue`) as your key pair name.
 
 Using AWS CLI:
 

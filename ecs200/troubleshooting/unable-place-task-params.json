@@ -1,0 +1,10 @@
+[
+    {
+        "ParameterKey":"EnvironmentName",
+        "ParameterValue":"unable-place-task"
+    },
+    {
+        "ParameterKey":"KeyPair",
+        "ParameterValue":"<KEY_PAIR_NAME>"
+    }
+]
