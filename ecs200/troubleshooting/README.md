@@ -153,3 +153,43 @@ You will see the error message in of the ECS service and the task will fail to r
 ```bash
 aws cloudformation delete-stack --stack-name sameTD-fail-run-task --region <REGION>
 ```
+
+
+### Task restart issue
+
+#### Scenario
+
+Hello,
+
+I noticed that my task will restart after run a while,
+the task will stop and restart again in ECS service.
+Could you please help to find issue?
+
+#### Deploy the Troubleshooting lab
+
+Open `task-restart-issue-params.json`, edit the `KeyPair`
+parameter value(`ParameterValue`) as your key pair name.
+
+Using AWS CLI:
+
+```bash
+aws cloudformation create-stack --stack-name task-restart-issue --template-body file://$PWD/task-restart-issue.yml --parameters file://$PWD/task-restart-issue-params.json --region <REGION> --capabilities CAPABILITY_NAMED_IAM
+```
+
+Output:
+
+```bash
+{
+    "StackId": "arn:aws:cloudformation:<REGION>:<ACCOUNT_ID>:stack/task-restart-issue/XXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+}
+```
+
+After deployed the stack, you will see the task will run for a while but quickly stop,
+and restart again.
+
+
+#### Clean up
+
+```bash
+aws cloudformation delete-stack --stack-name task-restart-issue --region <REGION>
+```
