@@ -74,3 +74,48 @@ Output:
 ```bash
 aws cloudformation delete-stack --stack-name wrong-ecs-cluster --region <REGION>
 ```
+
+
+### Fail to access container
+
+#### Scenario
+
+Hello,
+
+I created an ECS cluster and launch the container instance.
+My container can successfully pass ELB health check, however, it is unaccessible if visit ELB
+
+- http://XXXXX.<REGION>.elb.amazonaws.com
+- http://XXXXX.<REGION>.elb.amazonaws.com/api
+
+I also tried to launch another EC2 instance in the VPC, and it can correctly response
+the web page:
+
+```
+curl http://<container_instance_private_ip>:<container_host_port>
+```
+
+#### Deploy the Troubleshooting lab
+
+Open `fail-to-access-container-params.json`, edit the `KeyPair`
+parameter value(`ParameterValue`) as your key pair name.
+
+Using AWS CLI:
+
+
+```bash
+aws cloudformation create-stack --stack-name fail-to-access-container --template-body file://$PWD/fail-to-access-container.yml --parameters file://$PWD/fail-to-access-container-params.json --region <REGION> --capabilities CAPABILITY_NAMED_IAM
+```
+
+Output:
+```bash
+{
+    "StackId": "arn:aws:cloudformation:<REGION>:<ACCOUNT_ID>:stack/fail-to-access-container/XXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+}
+```
+
+#### Clean up
+
+```bash
+aws cloudformation delete-stack --stack-name fail-to-access-container --region <REGION>
+```
