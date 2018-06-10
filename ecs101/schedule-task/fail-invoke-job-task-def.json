@@ -1,0 +1,31 @@
+{
+    "family": "fail-invoke-cron",
+    "networkMode": "awsvpc",
+    "containerDefinitions": [
+        {
+            "name": "fail-invoke-cron",
+            "image": "alpine:3.7",
+            "memory": 128,
+            "entryPoint": [
+                "/bin/sh",
+                "-c",
+                "date +'Running the cron job on %Y-%m-%d %T %z' >> /data/cron-job.log"
+            ],
+            "essential": true,
+            "mountPoints": [
+                {
+                    "sourceVolume": "data",
+                    "containerPath": "/data"
+                }
+            ]
+        }
+    ],
+    "volumes": [
+        {
+            "name": "data",
+            "host": {
+                "sourcePath": "/ecs-workshop"
+            }
+        }
+    ]
+}
