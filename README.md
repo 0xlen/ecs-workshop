@@ -8,6 +8,12 @@ ECS Workshop
 - Follow the document: [Launch an Amazon EC2 Instance](https://docs.aws.amazon.com/quickstarts/latest/vmlaunch/step-1-launch-instance.html) to launch the EC2 instance.
 - Follow the document to create an IAM role with the proper permission and [attach an IAM Role to an EC2 Instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html#attach-iam-role). In this workshop, the deployment scripts will deploy troubleshooting environment by creating CloudFormation stacks, you can attach AWS managed policy `arn:aws:iam::aws:policy/AdministratorAccess` to the IAM role. (This IAM role is used to in this workshop, not recommend use the IAM role in practical or production environment.)
 - Follow the [document](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/authorizing-access-to-an-instance.html#add-rule-authorize-access) to set up the proper security group for the EC2 instance to allow you can SSH into it.
+- Install the Git and pull the workshop materials:
+
+```bash
+sudo yum install -y git
+git clone https://github.com/0xlen/ecs-workshop
+```
 
 ### Generate and import the SSH key pair for the workshop
 
