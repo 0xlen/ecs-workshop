@@ -45,7 +45,7 @@ reset_ParameterFiles() {
     git checkout *-params.json
 }
 
-# Troubleshooting stack: No instancce in the ECS Cluster
+# Troubleshooting stack: No instance in the ECS Cluster
 deploy_NoInstanceInCluster() {
     echo 'Deploy stack: no-instance-in-cluster ...'
     aws cloudformation create-stack --stack-name no-instance-in-cluster --template-body file://$PWD/no-instance-in-cluster.yml --parameters file://$PWD/no-instance-in-cluster-params.json --region $REGION --capabilities CAPABILITY_NAMED_IAM

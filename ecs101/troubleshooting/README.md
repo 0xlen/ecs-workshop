@@ -2,7 +2,7 @@
 
 ## Troubleshooting
 
-### No instancce in the ECS Cluster
+### No instance in the ECS Cluster
 
 #### Scenario
 
