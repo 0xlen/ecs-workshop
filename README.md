@@ -74,3 +74,39 @@ Deploy the troubleshooting environment:
 [ec2-user@host ecs-workshop]$ ./deploy.sh reset
 [ec2-user@host ecs-workshop]$ ./deploy.sh clean
 ```
+
+### ECS 200
+
+Deploy Fargate troubleshooting environment:
+
+```bash
+cd ecs200/troubleshooting/
+
+export ECS_WORKSHOP_REGION=eu-west-1
+./deploy_fargate.sh FargateCannotRunTasksConcurrency
+
+export ECS_WORKSHOP_REGION=us-west-2
+./deploy_fargate.sh
+```
+
+Deploy EC2 troubleshooting environment:
+
+```bash
+cd ecs200/troubleshooting/
+
+export ECS_WORKSHOP_REGION=ap-southeast-2
+./deploy_ec2.sh
+```
+
+#### Clean up
+
+```bash
+cd ecs200/troubleshooting/
+
+export ECS_WORKSHOP_REGION=eu-west-1
+./deploy_fargate.sh clean
+export ECS_WORKSHOP_REGION=us-west-2
+./deploy_fargate.sh clean
+export ECS_WORKSHOP_REGION=ap-southeast-2
+./deploy_ec2.sh clean
+```
